@@ -1,7 +1,11 @@
 function emg = name_emg(emg,tab_assoc)
 
-% emg : struct
-% tab_assoc : cell array
+%{
+Renames the "SensorX" fields in the EMG substructure to the associated
+muscles specified in tab_assoc.
+- emg : struct
+- tab_assoc : cell array
+%}
 
 for i=1:size(tab_assoc,1)
     if ~isempty(tab_assoc{i,2})

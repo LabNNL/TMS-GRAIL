@@ -1,5 +1,10 @@
 function [env_struc] = get_envelope(struc)
 
+%{
+Calculates the EMG envelopes on all gait cycles, as well as the mean and
+standard deviation across the trial.
+%}
+
 side={'Left','Right'};
 
 first_frame=struc.FirstFrame;

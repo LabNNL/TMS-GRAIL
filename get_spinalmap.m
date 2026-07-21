@@ -1,6 +1,9 @@
 function [spi_struc] = get_spinalmap(env_struc)
 
-% Requires the structure returned by the 'get_envelope' function
+%{
+Calculates and maps the mean EMG activity on spinal segments.
+Requires the structure returned by the 'get_envelope' function.
+%} 
 
 %% Kendall chart of muscle innervation (from Cappellini et al. 2010)
 

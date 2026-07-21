@@ -1,5 +1,10 @@
 function [crp_struc] = get_crp(struc)
 
+%{
+Computes Mean Absolute Relative Phase and Deviation Phase for the two
+joint pairs Knee-Hip and Ankle-Knee on both sides.
+%}
+
 side={'Left','Right'};
 angle={'Hip','Knee','Ankle'};
 pad=.1*struc.Frequency;

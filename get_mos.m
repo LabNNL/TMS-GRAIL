@@ -1,5 +1,10 @@
 function [mos_struc] = get_mos(struc)
 
+%{
+Calculates the anteroposterior and mediolateral Margins of Stability on all
+gait cycles, as well as the mean and std across the trial.
+%}
+
 side={'Left','Right'};
 fs=struc.Frequency;
 fc=6;                                                                       % Low-pass at 6 Hz
@@ -7,14 +12,14 @@ fc=6;                                                                       % Lo
 % Centre of mass
 
 [b,a]=butter(2,2*fc/fs,'low');
-com_ap=filtfilt(b,a,-struc.CentreOfMass(:,2)');                            % In the direction of progression
-com_v=filtfilt(b,a,struc.CentreOfMass(:,3)');                              % See lab coordinate system
+com_ap=filtfilt(b,a,-struc.CentreOfMass(:,2)');                             % In the direction of progression
+com_v=filtfilt(b,a,struc.CentreOfMass(:,3)');                               % See lab coordinate system
 vcom_ap=gradient(com_ap,1/fs)+struc.Misc.WalkingSpeed*1000;
 
 for j=1:2
     
     if j==1
-        com_ml=filtfilt(b,a,struc.CentreOfMass(:,1)');                     % From medial to lateral
+        com_ml=filtfilt(b,a,struc.CentreOfMass(:,1)');                      % From medial to lateral
     else
         com_ml=filtfilt(b,a,-struc.CentreOfMass(:,1)');  
     end
