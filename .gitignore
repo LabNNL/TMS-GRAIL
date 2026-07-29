@@ -11,3 +11,5 @@ Tests.m
 *.jasp
 *.spv
 *.xlsx
+*.cfs
+*.csv
