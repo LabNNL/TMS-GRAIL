@@ -13,3 +13,6 @@ Tests.m
 *.xlsx
 *.cfs
 *.csv
+PIL/
+CP/
+TD/
