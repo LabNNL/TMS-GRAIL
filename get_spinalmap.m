@@ -8,7 +8,7 @@ Requires the structure returned by the 'get_envelope' function.
 %% Kendall chart of muscle innervation (from Cappellini et al. 2010)
 
 %    GMAX GMED  TFL SART  ADD  RF   VL   VM   BF   ST   GL   GM   SOL PERL  TA
-coef=[ 0    0    0    1    1    1    1    1    0    0    0    0    0    0    0 ;...  L2
+coef=[ 0    0    0    1    1    1    1    1    0    0    0    0    0    0    0;...   L2
        0    0    0    1    1    1    1    1    0    0    0    0    0    0    0;...   L3
        0    1    1    0   .5    1    1    1    0   .5    0    0    0   .5    1;...   L4
        1    1    1    0    0    0    0    0   .5    1    0    0   .5    1    1;...   L5

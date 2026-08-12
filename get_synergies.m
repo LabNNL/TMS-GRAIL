@@ -19,7 +19,7 @@ for j=1:2
     if ~isempty(missing_mus)
         continue
     else
-        
+
         nbc=length(env_struc.(side{j}).(fields{1}).cycles_raw);
         M=zeros(nbm,nbc*101);
         for m=1:nbm
@@ -28,7 +28,7 @@ for j=1:2
         end
         M=M./max(M,[],2);
         syn_struc.(side{j}).M=M;
-        
+
         % Determination of the number of synergies
         vaf=zeros(1,nbm);
         vaf_mus=zeros(nbm,nbm);
