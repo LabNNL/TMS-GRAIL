@@ -37,10 +37,10 @@ else
             'Right_ST'     , 7;
             'Right_GMED'   , 8;
             'Left_GMED'    , [];
-            'Right_TA'     , 9;
-            'Right_TA_dist', 10;
-            'Left_TA'      , 11;
-            'Left_TA_dist' , 12;
+            'Right_TA'     , 11;
+            'Right_TA_dist', 12;
+            'Left_TA'      , 9;
+            'Left_TA_dist' , 10;
             'Right_SOL'    , 16;
             'Left_SOL'     , 15;
             'Right_GM'     , 13;
