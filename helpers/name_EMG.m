@@ -1,4 +1,4 @@
-function emg = name_emg(emg,tab_assoc)
+function emg = name_EMG(emg,tab_assoc)
 
 %{
 Renames the "SensorX" fields in the EMG substructure to the associated
