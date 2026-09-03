@@ -6,7 +6,7 @@
 clear
 clc
 
-participant='PIL01';                                                        % Identifiant du participant (ex: 'PIL01')
+participant='TD02';                                                        % Identifiant du participant (ex: 'PIL01')
 cond={'NW','VM','CT'};
 side=pick_spinal_side(participant);                                         % Côté avec le plus de muscles mesurés
 
@@ -55,7 +55,7 @@ tl.Padding='compact'; tl.TileSpacing='compact';
 clear
 clc
 
-participant='PIL03';
+participant='TD01';
 cond={'NW','VM','CT'};
 side={'Left','Right'};
 
@@ -109,7 +109,7 @@ tl.Padding='compact'; tl.TileSpacing='compact';
 clear
 clc
 
-participant='PIL01';
+participant='TD02';
 cond={'NW','VM','CT'};
 side={'Left','Right'};
 
@@ -164,7 +164,7 @@ tl.Padding='compact'; tl.TileSpacing='compact';
 clear
 clc
 
-participant='PIL03';
+participant='TD02';
 cond={'NW','VM','CT'};
 side={'Left','Right'};
 
@@ -218,7 +218,7 @@ end
 clear
 clc
 
-participant='PIL03';
+participant='TD02';
 cond={'NW','VM','CT'};
 side={'Left','Right'};
 muscles={'TA','SOL','GM','RF','VL','ST','GMED'};
@@ -305,6 +305,76 @@ for j=1:2
     title(tl,[side{j} ' muscle synergies - ' participant])
     tl.Padding='compact'; tl.TileSpacing='compact';
 end
+
+%% MEPs, amplitude p2p et AUC
+
+clear
+clc
+
+participant='PIL01';
+cond={'NW','VM','CT'};
+
+tms_dir=fullfile(find_subject_path(participant),'TMS');
+addpath(tms_dir)
+
+raw_peaks=cell(1,length(cond));
+raw_aucs=cell(1,length(cond));
+mep_data=cell(1,length(cond));
+
+for c = 1:length(cond)
+    % Tous les fichiers commençant par cond{c} et finissant par MEPs.mat
+    files = dir(fullfile(tms_dir, [cond{c} '*MEPs.mat']));
+
+    if isempty(files)
+        warning('Aucun fichier %s*MEPs.mat trouvé pour %s.',cond{c},participant);
+        continue
+    end
+
+    merged_mep = struct();
+    all_trials = [];
+    peaks      = [];
+    aucs       = [];
+    mep_count  = 0;
+
+    for f = 1:length(files)
+        data = load(fullfile(files(f).folder, files(f).name));
+
+        mep_fields = fieldnames(data.MEP);
+        mep_fields = mep_fields(~ismember(mep_fields, {'Meta', 'All'}));
+
+        for m = 1:length(mep_fields)
+            current_mep = data.MEP.(mep_fields{m});
+
+            mep_count = mep_count + 1;
+            merged_mep.(sprintf('MEP_%02d', mep_count)) = current_mep;
+
+            if isfield(current_mep, 'Peak2Peak_uV')
+                peaks(end+1, 1) = current_mep.Peak2Peak_uV; %#ok<AGROW>
+            end
+            if isfield(current_mep, 'AUC_uVms')
+                aucs(end+1, 1) = current_mep.AUC_uVms; %#ok<AGROW>
+            end
+        end
+
+        % Concaténation des traces (nécessaire pour MEP_mean_fig)
+        if isfield(data.MEP, 'All')
+            all_trials = [all_trials; data.MEP.All]; %#ok<AGROW>
+        end
+        if isfield(data.MEP, 'Meta')
+            merged_mep.Meta = data.MEP.Meta;
+        end
+    end
+
+    merged_mep.All = all_trials;
+    mep_data{c}    = merged_mep;
+
+    raw_peaks{c} = peaks;
+    raw_aucs{c}  = aucs;
+end
+
+cms = nebula(length(cond));
+
+MEP_figure(raw_peaks, raw_aucs, mep_data, cond, cms);               % Figure combinée
 
 %% Functions
 
