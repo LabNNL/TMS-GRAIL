@@ -1,6 +1,10 @@
-function MEP_figure(peaks_cell, aucs_cell, mep_cell, cond, colors)
+function MEP_figure(peaks_cell, aucs_cell, mep_cell, cond, colors, muscle)
 
 % Boxplots Peak-to-Peak et AUC, et courbes MEP moyennes +std par condition
+
+if nargin < 6
+    muscle = '';
+end
 
 n = length(cond);
 dark_colors = colors * 0.55;
@@ -8,7 +12,12 @@ dark_colors = colors * 0.55;
 panel_title_font = {'FontSize', 12, 'FontWeight', 'bold'};
 cond_label_font  = {'FontSize', 10, 'FontWeight', 'normal'};
 
-figure('Name', 'TMS-GRAIL - MEP Analysis', 'Color', 'w', 'Position', [100, 100, 1100, 700]);
+fig_name = 'MEP Analysis';
+if ~isempty(muscle)
+    fig_name = sprintf('%s (%s)', fig_name, muscle);
+end
+
+figure('Name', fig_name, 'Color', 'w', 'Position', [100, 100, 1100, 700]);
 outer = tiledlayout(2, 1, 'TileSpacing', 'compact', 'Padding', 'compact');
 
 % Panneau du haut

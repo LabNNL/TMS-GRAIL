@@ -6,7 +6,7 @@
 clear
 clc
 
-participant='TD02';                                                        % Identifiant du participant (ex: 'PIL01')
+participant='TD02';                                                         % Identifiant du participant (ex: 'PIL01')
 cond={'NW','VM','CT'};
 side=pick_spinal_side(participant);                                         % Côté avec le plus de muscles mesurés
 
@@ -311,22 +311,46 @@ end
 clear
 clc
 
-participant='PIL01';
+participant='TD01';
 cond={'NW','VM','CT'};
 
 tms_dir=fullfile(find_subject_path(participant),'TMS');
-addpath(tms_dir)
 
-raw_peaks=cell(1,length(cond));
-raw_aucs=cell(1,length(cond));
-mep_data=cell(1,length(cond));
+% Un sous-dossier par muscle (ex: TMS\TA\, TMS\SOL\)
+muscle_list = dir(tms_dir);
+muscle_list = muscle_list([muscle_list.isdir] & ~ismember({muscle_list.name}, {'.', '..'}));
+muscles = {muscle_list.name};
+
+if isempty(muscles)
+    error('Aucun sous-dossier de muscle trouvé dans %s.', tms_dir)
+end
+
+cms = nebula(length(cond));
+
+for mi = 1:length(muscles)
+    muscle     = muscles{mi};
+    muscle_dir = fullfile(tms_dir, muscle);
+    addpath(muscle_dir)
+
+    [raw_peaks, raw_aucs, mep_data] = load_mep_data(muscle_dir, cond, participant, muscle);
+
+    MEP_figure(raw_peaks, raw_aucs, mep_data, cond, cms, muscle);   % Figure combinée, une par muscle
+end
+
+%% Functions
+
+function [raw_peaks, raw_aucs, mep_data] = load_mep_data(data_dir, cond, participant, muscle)
+% Charge les fichiers *_MEPs.mat de data_dir commençant par cond{c} 
+
+raw_peaks = cell(1, length(cond));
+raw_aucs  = cell(1, length(cond));
+mep_data  = cell(1, length(cond));
 
 for c = 1:length(cond)
-    % Tous les fichiers commençant par cond{c} et finissant par MEPs.mat
-    files = dir(fullfile(tms_dir, [cond{c} '*MEPs.mat']));
+    files = dir(fullfile(data_dir, [cond{c} '*MEPs.mat']));
 
     if isempty(files)
-        warning('Aucun fichier %s*MEPs.mat trouvé pour %s.',cond{c},participant);
+        warning('Aucun fichier %s*MEPs.mat trouvé pour %s (%s).', cond{c}, participant, muscle);
         continue
     end
 
@@ -356,7 +380,7 @@ for c = 1:length(cond)
             end
         end
 
-        % Concaténation des traces (nécessaire pour MEP_mean_fig)
+        % Concaténation des courbes (nécessaire pour MEP_mean_fig)
         if isfield(data.MEP, 'All')
             all_trials = [all_trials; data.MEP.All]; %#ok<AGROW>
         end
@@ -372,11 +396,7 @@ for c = 1:length(cond)
     raw_aucs{c}  = aucs;
 end
 
-cms = nebula(length(cond));
-
-MEP_figure(raw_peaks, raw_aucs, mep_data, cond, cms);               % Figure combinée
-
-%% Functions
+end
 
 function subject_path = find_subject_path(participant)
 % Recherche le dossier du participant (ex: 'PIL01') parmi les groupes
